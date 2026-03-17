@@ -21,6 +21,7 @@ const generateToken = async (user) => {
     user: user._id,
     expiresAt: expiresAt,
   });
+  return { accessToken, refreshToken };
 };
 
 module.exports = generateToken;

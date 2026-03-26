@@ -82,7 +82,7 @@ const loginUser = async (req, res) => {
       logger.warn("Password do not match!!");
       return res.status(401).json({
         success: false,
-        message: "Ivalid Credentials",
+        message: "Invalid Credentials",
       });
     }
     // generate Access and RefreshToken
@@ -118,7 +118,7 @@ const refreshTokenCreationEndpoint = async (req, res) => {
     const storedToken = await RefreshToken.findOne({ token: refreshToken });
     if (!storedToken || storedToken.expiresAt < new Date()) {
       logger.warn("Invalid or expired Refresh Token");
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid or expired Refresh Token",
       });

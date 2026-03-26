@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 3000;
 // connectToDb
 connectToDb();
 
+
+// Rate Limiting with redis
 //middlewares
 app.use(helmet());
 app.use(cors());

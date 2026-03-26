@@ -153,4 +153,36 @@ const refreshTokenCreationEndpoint = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, refreshTokenCreationEndpoint };
+// Logout Endpoint
+const logOut = async (req, res) => {
+  try {
+    logger.info("Logout endpoint hit.....");
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid  token",
+      });
+    }
+    // delete the token
+    await RefreshToken.findOneAndDelete({ token: refreshToken });
+    logger.info("Refresh Token deleted for logout");
+    res.status(200).json({
+      success: true,
+      message: "Logged Out Successfully",
+    });
+  } catch (error) {
+    logger.error("Error while logging out", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server error",
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  refreshTokenCreationEndpoint,
+  logOut,
+};

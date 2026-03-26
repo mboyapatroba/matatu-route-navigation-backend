@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
     logger.info("User saved successfully", user._id);
 
     // generateToken
-    const { accessToken, refreshToken } = generateToken(user);
+    const { accessToken, refreshToken } = await generateToken(user);
     res.status(201).json({
       success: true,
       message: "User Registered Successfully",
@@ -56,6 +56,50 @@ const registerUser = async (req, res) => {
 };
 
 //User Login
-const loginUser = async (req, res) => {};
+const loginUser = async (req, res) => {
+  try {
+    logger.info("Login endpoint hit...");
+    const { error } = validateLogin(req.body);
+    if (error) {
+      logger.warn("Validation error", error.details[0].message);
+      return res.status(400).json({
+        success: false,
+        message: error.details[0].message,
+      });
+    }
+    // check if user
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      logger.warn("Login Failed... User with the given email not found");
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Credentials",
+      });
+    }
+    const isValidPassword = user.comparePassword(password);
+    if (!isValidPassword) {
+      logger.warn("Password do not match!!");
+      return res.status(401).json({
+        success: false,
+        message: "Ivalid Credentials",
+      });
+    }
+    // generate Access and RefreshToken
+    const { accessToken, refreshToken } = await generateToken(user);
+    res.status(200).json({
+      success: true,
+      message: "Logged in successfully",
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+  } catch (error) {
+    logger.error("Login error occurred please try Again!!", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
-module.exports = { registerUser };
+module.exports = { registerUser, loginUser };

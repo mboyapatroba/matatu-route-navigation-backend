@@ -102,4 +102,55 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+//Refresh Token Creation Endpoint
+const refreshTokenCreationEndpoint = async (req, res) => {
+  try {
+    logger.info("Refresh Token endpoint hit...");
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      logger.warn("Refresh Token missing");
+      return res.status(400).json({
+        success: false,
+        message: "Refresh Token missing",
+      });
+    }
+    // check for expiration with the one in db
+    const storedToken = await RefreshToken.findOne({ token: refreshToken });
+    if (!storedToken || storedToken.expiresAt < new Date()) {
+      logger.warn("Invalid or expired Refresh Token");
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired Refresh Token",
+      });
+    }
+    // get user associated with the token
+    const user = await User.findById(storedToken.user);
+    if (!user) {
+      logger.warn("User not found");
+      return res.status(400).json({
+        succes: false,
+        message: "User not found",
+      });
+    }
+    // generate new access and RefreshToken and delete the Old one
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      await generateToken(user);
+
+    // delete old token
+    await RefreshToken.deleteOne({ _id: storedToken._id });
+
+    // return the new access and refresh tokens
+    res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+  } catch (error) {
+    logger.error("Refresh Token Error Occurred", error);
+    res.status(500).json({
+      success: false,
+      message: "Invalid Credentials",
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, refreshTokenCreationEndpoint };

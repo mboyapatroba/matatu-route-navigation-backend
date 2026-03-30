@@ -166,6 +166,7 @@ const updateStop = async (req, res) => {
     logger.info("Update stop endpoint hit....");
 
     const { error } = updateStopValidation(req.body);
+
     if (error) {
       logger.warn("Validation error", error.details[0].message);
       return res.status(400).json({
@@ -173,6 +174,25 @@ const updateStop = async (req, res) => {
         message: error.details[0].message,
       });
     }
+    const stopId = req.params.id;
+    const updateStopForm = req.body;
+    const updatedStop = await Stop.findByIdAndUpdate(stopId, updateStopForm, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedStop) {
+      return res.status(404).json({
+        success: false,
+        message: "Stop not found",
+      });
+    }
+    logger.info(`Stop updated: ${updateStop._id}`);
+    res.status(200).json({
+      success: true,
+      message: "Stop updated Successfully",
+      stop: updatedStop,
+    });
   } catch (error) {
     logger.error("Error updating stop", error);
     res.status(500).json({

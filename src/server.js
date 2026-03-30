@@ -6,13 +6,14 @@ const logger = require("./utils/logger");
 const connectToDb = require("./dbConnection/db");
 const errorHandler = require("./middlewares/errorHandler");
 const authRoutes = require("./routes/auth-routes");
+const stopRoutes = require("./routes/stop-routes");
+const routeRoutes = require("./routes/route-routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // connectToDb
 connectToDb();
-
 
 // Rate Limiting with redis
 //middlewares
@@ -22,6 +23,8 @@ app.use(express.json());
 
 //main routes
 app.use("/api/auth", authRoutes);
+app.use("/api/stops", stopRoutes);
+app.use("/api/routes", routeRoutes);
 //errorHandler
 app.use(errorHandler);
 

@@ -39,9 +39,35 @@ const updateStopValidation = (data) => {
   return schema.validate(data, { abortEarly: false });
 };
 
+// Create Route Validation
+const validateCreateRoute = (data) => {
+  const schema = Joi.object({
+    routeNumber: Joi.string().trim().min(1).max(50).required(),
+    startStop: Joi.string().required(),
+    endStop: Joi.string().required(),
+    stops: Joi.array().items(Joi.string()).min(2).required(),
+    distanceKm: Joi.number().min(0).optional(),
+    isActive: Joi.boolean().optional(),
+  });
+  return schema.validate(data);
+};
+
+//update Route validation
+const validateUpdateRoute = (data) => {
+  const schema = Joi.object({
+    routeNumber: Joi.string().trim().min(1).max(50).optional(),
+    startStop: Joi.string().optional(),
+    endStop: Joi.string().optional(),
+    stops: Joi.array().items(Joi.string()).min(2).optional(),
+    distanceKm: Joi.number().min(0).optional(),
+    isActive: Joi.boolean().optional(),
+  });
+};
 module.exports = {
   validateRegistration,
   validateLogin,
   validateCreateStop,
   updateStopValidation,
+  validateCreateRoute,
+  validateUpdateRoute,
 };

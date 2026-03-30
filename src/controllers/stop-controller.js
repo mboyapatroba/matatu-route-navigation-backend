@@ -58,8 +58,8 @@ const getAllStops = async (req, res) => {
     logger.info("Get all stops endpoint hit....");
 
     //pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
 
     //sorting
@@ -87,7 +87,7 @@ const getAllStops = async (req, res) => {
       totalPages: totalPages,
       totalStops: totalStops,
     };
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
     logger.error("Error getting stops", error);
     res.status(500).json({
@@ -129,6 +129,7 @@ const getSingleStopById = async (req, res) => {
 // delete a stop (Admin Only)
 const deleteStop = async (req, res) => {
   try {
+    logger.info("Delete stop endpoint hit....")
     const stopId = req.params.id;
     // Validate ObjectId
     // if (!mongoose.Types.ObjectId.isValid(stopId)) {

@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
         message: "Invalid Credentials",
       });
     }
-    const isValidPassword = user.comparePassword(password);
+    const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
       logger.warn("Password do not match!!");
       return res.status(401).json({

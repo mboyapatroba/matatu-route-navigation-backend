@@ -184,7 +184,7 @@ const updateRoute = async (req, res) => {
     const routeId = req.params.id;
     const updateData = { ...req.body };
 
-    // Optional: check that provided stops exist
+    //  check that provided stops exist optional
     if (updateData.startStop) {
       const startStopExist = await Stop.findById(updateData.startStop);
       if (!startStopExist) {

@@ -35,7 +35,7 @@ const updateStopValidation = (data) => {
     latitude: Joi.number().optional(),
     longitude: Joi.number().optional(),
     area: Joi.string().trim().optional().allow(""), // treat empty strings as valid instead of rejecting
-  });
+  }).min(1);
   return schema.validate(data, { abortEarly: false });
 };
 
@@ -49,7 +49,7 @@ const validateCreateRoute = (data) => {
     distanceKm: Joi.number().min(0).optional(),
     isActive: Joi.boolean().optional(),
   });
-  return schema.validate(data);
+  return schema.validate(data, { abortEarly: false });
 };
 
 //update Route validation
@@ -61,7 +61,37 @@ const validateUpdateRoute = (data) => {
     stops: Joi.array().items(Joi.string()).min(2).optional(),
     distanceKm: Joi.number().min(0).optional(),
     isActive: Joi.boolean().optional(),
+  }).min(1);
+};
+
+// Create fare validation
+const validateCreateFare = (data) => {
+  const schema = Joi.object({
+    route: Joi.string().required(),
+    baseFare: Joi.number().min(0).required(),
+    peakFare: Joi.number().min(0).required(),
+    maxFare: Joi.number().min(0).required(),
+    currency: Joi.string().uppercase().optional(),
+  }).custom((value, helpers) => {
+    if (value.peakFare < value.baseFare || value.maxFare < value.peakFare) {
+      return helpers.error("any.invalid");
+    }
+    return value;
   });
+
+  return schema.validate(data, { abortEarly: false });
+};
+
+// updateFare validation
+const validateUpdateFare = (data) => {
+  const schema = Joi.object({
+    route: Joi.string().optional(),
+    baseFare: Joi.number().min(0).optional(),
+    peakFare: Joi.number().min(0).optional(),
+    maxFare: Joi.number().min(0).optional(),
+    currency: Joi.string().uppercase().optional(),
+  }).min(1);
+  return schema.validate(data, { abortEarly: false });
 };
 module.exports = {
   validateRegistration,
@@ -70,4 +100,6 @@ module.exports = {
   updateStopValidation,
   validateCreateRoute,
   validateUpdateRoute,
+  validateCreateFare,
+  validateUpdateFare,
 };

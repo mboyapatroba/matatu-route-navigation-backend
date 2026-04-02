@@ -272,6 +272,45 @@ const toggleRouteActiveStatus = async (req, res) => {
   }
 };
 
+const getRouteWithCoordinates = async (req, res) => {
+  try {
+    logger.info("Get route with coordinates endpoint hit...");
+
+    const routeId = req.params.id;
+
+    const route = await Route.findById(routeId);
+
+    if (!route) {
+      return res.status(404).json({
+        success: false,
+        message: "Route not found",
+      });
+    }
+
+    // format stops for map
+    const formattedStops = route.stops.map((stop) => ({
+      name: stop.name,
+      lat: stop.latitude,
+      lng: stop.longitude,
+    }));
+
+    res.status(200).json({
+      success: true,
+      route: {
+        routeId: route._id,
+        routeNumber: route.routeNumber,
+        stops: formattedStops,
+      },
+    });
+  } catch (error) {
+    logger.error("Error fetching routes with coordinates", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fecth route",
+    });
+  }
+};
+
 module.exports = {
   createRoute,
   getAllRoutes,
@@ -279,4 +318,5 @@ module.exports = {
   deleteRouteById,
   toggleRouteActiveStatus,
   updateRoute,
+  getRouteWithCoordinates,
 };

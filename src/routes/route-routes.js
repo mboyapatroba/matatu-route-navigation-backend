@@ -9,16 +9,37 @@ const {
   deleteRouteById,
   toggleRouteActiveStatus,
   updateRoute,
+  getRouteWithCoordinates,
 } = require("../controllers/route-controllers");
 
 // Public routes
 router.get("/get-routes", validateToken, getAllRoutes);
 router.get("/get-single-route/:id", validateToken, getSingleRouteById);
+router.get(
+  "/get-route-with-coordinates",
+  validateToken,
+  getRouteWithCoordinates,
+);
 
 // Admin Only
 router.post("/create-route", validateToken, adminPageProtection, createRoute);
-router.put("/update-route/:id", validateToken, adminPageProtection, updateRoute);
-router.delete("/delete-route/:id", validateToken, adminPageProtection, deleteRouteById);
-router.put("/toggle-route/:id", validateToken, adminPageProtection, toggleRouteActiveStatus);
+router.put(
+  "/update-route/:id",
+  validateToken,
+  adminPageProtection,
+  updateRoute,
+);
+router.delete(
+  "/delete-route/:id",
+  validateToken,
+  adminPageProtection,
+  deleteRouteById,
+);
+router.put(
+  "/toggle-route/:id",
+  validateToken,
+  adminPageProtection,
+  toggleRouteActiveStatus,
+);
 
 module.exports = router;

@@ -18,7 +18,12 @@ router.get("/get-single-stop/:id", validateToken, getSingleStopById);
 
 //Admin Only
 router.post("/create-stop", validateToken, adminPageProtection, createStop);
-router.put("/update-stop", validateToken, adminPageProtection, updateStop);
-router.delete("/delete-post", validateToken, adminPageProtection, deleteStop);
+router.put("/update-stop/:id", validateToken, adminPageProtection, updateStop);
+router.delete(
+  "/delete-stop/:id",
+  validateToken,
+  adminPageProtection,
+  deleteStop,
+);
 
 module.exports = router;

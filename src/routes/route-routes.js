@@ -16,7 +16,7 @@ const {
 router.get("/get-routes", validateToken, getAllRoutes);
 router.get("/get-single-route/:id", validateToken, getSingleRouteById);
 router.get(
-  "/get-route-with-coordinates",
+  "/get-route-with-coordinates/:id",
   validateToken,
   getRouteWithCoordinates,
 );

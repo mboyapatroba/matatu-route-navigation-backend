@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
     }
 
     // check if user exists
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
     let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user) {
       logger.warn("Sorry user already exists");
@@ -34,6 +34,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password,
+      role,
     });
     await user.save(); // password hashing will happen in pre save in user model
     logger.info("User saved successfully", user._id);
@@ -87,6 +88,8 @@ const loginUser = async (req, res) => {
     }
     // generate Access and RefreshToken
     const { accessToken, refreshToken } = await generateToken(user);
+    logger.info("Logged in successfully...");
+
     res.status(200).json({
       success: true,
       message: "Logged in successfully",
@@ -157,6 +160,7 @@ const refreshTokenCreationEndpoint = async (req, res) => {
 const logOut = async (req, res) => {
   try {
     logger.info("Logout endpoint hit.....");
+
     const { refreshToken } = req.body;
     if (!refreshToken) {
       return res.status(400).json({
@@ -165,7 +169,16 @@ const logOut = async (req, res) => {
       });
     }
     // delete the token
-    await RefreshToken.findOneAndDelete({ token: refreshToken });
+    const deletedToken = await RefreshToken.findOneAndDelete({
+      token: refreshToken,
+    });
+
+    if (!deletedToken) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Refresh token",
+      });
+    }
     logger.info("Refresh Token deleted for logout");
     res.status(200).json({
       success: true,

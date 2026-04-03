@@ -188,7 +188,7 @@ const updateStop = async (req, res) => {
         message: "Stop not found",
       });
     }
-    logger.info(`Stop updated: ${updateStop._id}`);
+    logger.info(`Stop updated: ${updatedStop._id}`);
     res.status(200).json({
       success: true,
       message: "Stop updated Successfully",

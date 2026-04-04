@@ -40,7 +40,7 @@ const searchRoute = async (req, res) => {
       const stopIds = route.stops.map((s) => s._id.toString());
 
       const fromIndex = stopIds.indexOf(fromStop._id.toString());
-      const toIndex = stopIds.indexOf(fromStop._id.toString());
+      const toIndex = stopIds.indexOf(toStop._id.toString());
 
       // ensure correct order
       if (fromIndex < toIndex) {

@@ -25,6 +25,18 @@ const createRoute = async (req, res) => {
     const { routeNumber, startStop, endStop, stops, distanceKm, isActive } =
       req.body;
 
+    // ensure no duplicate route creation
+    const existingRoute = await Route.findOne({
+      startStop,
+      endStop,
+    });
+    if (existingRoute) {
+      return res.status(400).json({
+        success: false,
+        message: "Route with same  start-stop and end-stop exists",
+      });
+    }
+
     //Ensure all stops exist in Db
     const stopsExist = await Stop.find({ _id: { $in: stops } }); //It checks if the field _id is included in the array stops
     if (stopsExist.length !== stops.length) {
@@ -278,7 +290,7 @@ const getRouteWithCoordinates = async (req, res) => {
 
     const routeId = req.params.id;
 
-    const route = await Route.findById(routeId);
+    const route = await Route.findById(routeId).populate("stops");
 
     if (!route) {
       return res.status(404).json({

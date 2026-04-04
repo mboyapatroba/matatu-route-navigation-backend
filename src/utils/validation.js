@@ -63,6 +63,7 @@ const validateUpdateRoute = (data) => {
     distanceKm: Joi.number().min(0).optional(),
     isActive: Joi.boolean().optional(),
   }).min(1);
+  return schema.validate(data, { abortEarly: false });
 };
 
 // Create fare validation

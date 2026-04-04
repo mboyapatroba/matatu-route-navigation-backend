@@ -35,7 +35,7 @@ router.delete(
   adminPageProtection,
   deleteRouteById,
 );
-router.put(
+router.patch(
   "/toggle-route/:id",
   validateToken,
   adminPageProtection,

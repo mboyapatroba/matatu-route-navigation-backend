@@ -87,7 +87,7 @@ const validateCreateFare = (data) => {
 // updateFare validation
 const validateUpdateFare = (data) => {
   const schema = Joi.object({
-    route: Joi.string().optional(),
+    route: Joi.string().optional(), //think this should be required
     baseFare: Joi.number().min(0).optional(),
     peakFare: Joi.number().min(0).optional(),
     maxFare: Joi.number().min(0).optional(),

@@ -18,7 +18,7 @@ router.get("/get-fare-by-route/:routeId", validateToken, getFareByRoute);
 router.post("/create-fare", validateToken, adminPageProtection, createFare);
 router.put("/update-fare/:id", validateToken, adminPageProtection, updateFare);
 router.delete(
-  "/delete-fare/:id",
+  "/delete-fare/:id", 
   validateToken,
   adminPageProtection,
   deleteFare,
